@@ -2,16 +2,30 @@ package test;
 
 import base.BaseTest;
 import org.testng.annotations.Test;
+import pages.LoginPage;
 
-public class Login extends BaseTest {
+public class LoginTest extends BaseTest {
 
 
-    @Test
+    @Test (testName = "Login Test", priority = 2)
     public void loginTest() {
+
+        LoginPage loginPage = new LoginPage(page);
+        //HomePage homePage = new HomePage();
+
+        test.info("Navigating to the login page");
         page.navigate("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
-        page.locator("xpath=//input[@name='username']").fill("Admin");
-        page.locator("xpath=//input[@name='password']").fill("admin123");
-        page.locator("xpath=//button[@type='submit']").click();
-        System.out.println("Login successful");
+        loginPage.login("Admin", "admin123");
+        test.info("Performing login action");
+        loginPage.clickLogin();
+        test.info("Login action completed");
+        test.info("Login successful");
+        String pagetitle = page.title();
+        test.info("Page title: " + pagetitle);
+        String pageurl = page.url();
+        test.info("Page URL: " + pageurl);
+        loginPage.clickAdmin();
+
+
     }
 }
