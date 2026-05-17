@@ -11,8 +11,10 @@ public class HomePage extends BaseTest {
         //URL of the application
         page.navigate("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
         String pagetitle = page.title();
+        // Print the page title and URL to the console
         System.out.println("Page Title is: " + pagetitle);
         String pageurl = page.url();
+       
         System.out.println("Page URL is: " + pageurl);
 
 
