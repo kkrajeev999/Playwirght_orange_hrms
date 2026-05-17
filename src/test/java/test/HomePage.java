@@ -14,7 +14,7 @@ public class HomePage extends BaseTest {
         // Print the page title and URL to the console
         System.out.println("Page Title is: " + pagetitle);
         String pageurl = page.url();
-       
+       // To print the page URL to the console
         System.out.println("Page URL is: " + pageurl);
 
 
