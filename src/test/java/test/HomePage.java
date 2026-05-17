@@ -7,6 +7,8 @@ public class HomePage extends BaseTest {
 
     @Test (testName = "Home Page Test", priority = 1)
     public void homePageTest(){
+
+        //URL of the application
         page.navigate("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
         String pagetitle = page.title();
         System.out.println("Page Title is: " + pagetitle);
