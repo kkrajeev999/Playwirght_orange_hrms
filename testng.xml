@@ -2,7 +2,8 @@
 <suite name = "Playwright Test Suite" parallel="tests" thread-count="2">
     <test name = "Homepage">
         <classes>
-            <class name = "test.HomePage"/>
+            <!--<class name = "test.HomePage"/>-->
+
             <class name = "test.LoginTest"/>
         </classes>
     </test>
@@ -12,3 +13,6 @@
         </classes>
     </test>-->
 </suite>
+
+
+

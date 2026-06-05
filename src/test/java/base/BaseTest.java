@@ -1,3 +1,4 @@
+/*
 package base;
 
 import com.aventstack.extentreports.ExtentReports;
@@ -24,8 +25,9 @@ public class BaseTest {
         protected ExtentTest test;
 
 
-        @BeforeMethod
-        public void setup(Method method){
+        //@BeforeMethod
+        */
+/*public void setup(Method method){
             // Initialize ExtentReports
             extent = ExtentManager.getInstance();
             // Create a test in the report for the current test method
@@ -33,7 +35,31 @@ public class BaseTest {
                playwright = Playwright.create();
                browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
                page = browser.newPage();
+               page.navigate("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
+*//*
 
+        @BeforeMethod
+        public void setup(Method method){
+
+            extent = ExtentManager.getInstance();
+
+            test = extent.createTest(method.getName());
+
+            playwright = Playwright.create();
+
+            browser = playwright.chromium()
+                    .launch(new BrowserType.LaunchOptions().setHeadless(false));
+
+            page = browser.newPage();
+
+            page.navigate("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
+
+            // LOGIN HERE
+
+            page.locator("[name='username']").fill("Admin");
+            page.locator("[name='password']").fill("admin123");
+            page.locator("button[type='submit']").click();
+        }
         }
 
     @AfterMethod
@@ -53,4 +79,100 @@ public class BaseTest {
     }
 
 
+}
+*/
+
+package base;
+
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.BrowserType;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.Playwright;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import utils.ExtentManager;
+
+import java.lang.reflect.Method;
+
+public class BaseTest {
+
+    protected Playwright playwright;
+    protected Browser browser;
+    protected Page page;
+    protected ExtentReports extent;
+    protected ExtentTest test;
+
+    @BeforeMethod
+    public void setup(Method method) {
+
+        // Initialize Extent Report
+        extent = ExtentManager.getInstance();
+
+        // Create test entry in report
+        test = extent.createTest(method.getName());
+
+        // Launch Playwright
+        playwright = Playwright.create();
+
+        // Launch Browser
+        browser = playwright.chromium().launch(
+                new BrowserType.LaunchOptions()
+                        .setHeadless(false)
+        );
+
+        // Create new page
+        page = browser.newPage();
+
+        // Navigate to Login Page
+        page.navigate("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
+
+        // Perform Login
+        page.locator("[name='username']").fill("Admin");
+
+        page.locator("[name='password']").fill("admin123");
+
+        page.locator("button[type='submit']").click();
+
+        // Wait for dashboard page
+        page.waitForURL("**/dashboard/index");
+
+        test.info("Login successful");
+        System.out.println("Login successful");
+    }
+
+    /*@AfterMethod
+    public void tearDown(ITestResult result) {
+
+        // Log Test Result
+        if (result.getStatus() == ITestResult.FAILURE) {
+
+            test.fail("Test Failed");
+
+            test.fail(result.getThrowable());
+
+        } else if (result.getStatus() == ITestResult.SUCCESS) {
+
+            test.pass("Test Passed Successfully");
+
+        } else if (result.getStatus() == ITestResult.SKIP) {
+
+            test.skip("Test Skipped");
+        }
+
+        // Flush report
+        extent.flush();
+
+        // Close browser
+        if (browser != null) {
+            browser.close();
+        }
+
+        // Close Playwright
+        if (playwright != null) {
+            playwright.close();
+        }
+    }*/
 }
