@@ -1,87 +1,3 @@
-/*
-package base;
-
-import com.aventstack.extentreports.ExtentReports;
-import com.aventstack.extentreports.ExtentTest;
-import com.aventstack.extentreports.reporter.ExtentSparkReporter;
-import com.microsoft.playwright.Browser;
-import com.microsoft.playwright.BrowserType;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.Playwright;
-import org.testng.ITest;
-import org.testng.ITestResult;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import utils.ExtentManager;
-
-import java.lang.reflect.Method;
-
-public class BaseTest {
-
-        protected Playwright playwright;
-        protected  Browser browser;
-        protected Page page;
-        protected ExtentReports extent;
-        protected ExtentTest test;
-
-
-        //@BeforeMethod
-        */
-/*public void setup(Method method){
-            // Initialize ExtentReports
-            extent = ExtentManager.getInstance();
-            // Create a test in the report for the current test method
-               test = extent.createTest(method.getName());
-               playwright = Playwright.create();
-               browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
-               page = browser.newPage();
-               page.navigate("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
-*//*
-
-        @BeforeMethod
-        public void setup(Method method){
-
-            extent = ExtentManager.getInstance();
-
-            test = extent.createTest(method.getName());
-
-            playwright = Playwright.create();
-
-            browser = playwright.chromium()
-                    .launch(new BrowserType.LaunchOptions().setHeadless(false));
-
-            page = browser.newPage();
-
-            page.navigate("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
-
-            // LOGIN HERE
-
-            page.locator("[name='username']").fill("Admin");
-            page.locator("[name='password']").fill("admin123");
-            page.locator("button[type='submit']").click();
-        }
-        }
-
-    @AfterMethod
-    public void tearDown(ITestResult result){
-            // Log the test result in ExtentReports
-            if (result.getStatus() == ITestResult.FAILURE) {
-                test.fail("Test Failed: " + result.getThrowable());
-            } else if (result.getStatus() == ITestResult.SUCCESS) {
-                test.pass("Test Succeeded: " + result.getThrowable());
-            } else if (result.getStatus() == ITestResult.SKIP) {
-                test.skip("Test skipped: " + result.getThrowable());
-            }
-            extent.flush(); // Write the report to the file
-
-        if (browser != null)browser.close();
-        if (playwright!= null) playwright.close();
-    }
-
-
-}
-*/
-
 package base;
 
 import com.aventstack.extentreports.ExtentReports;
@@ -95,9 +11,10 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import utils.ExtentManager;
 
+import java.awt.*;
 import java.lang.reflect.Method;
 
-public class BaseTest {
+public class  BaseTest {
 
     protected Playwright playwright;
     protected Browser browser;
@@ -120,14 +37,20 @@ public class BaseTest {
         // Launch Browser
         browser = playwright.chromium().launch(
                 new BrowserType.LaunchOptions()
-                        .setHeadless(false)
-        );
+                        .setHeadless(false));
 
-        // Create new page
-        page = browser.newPage();
+        // Get Screen Size for maximizing window
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int width = (int) screenSize.getWidth();
+        int height = (int) screenSize.getHeight();
+
+        // Create new page and maximize
+        page = browser.newPage(new Browser.NewPageOptions().setViewportSize(width, height));
 
         // Navigate to Login Page
         page.navigate("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
+
+
 
         // Perform Login
         page.locator("[name='username']").fill("Admin");
@@ -143,7 +66,7 @@ public class BaseTest {
         System.out.println("Login successful");
     }
 
-    /*@AfterMethod
+    @AfterMethod
     public void tearDown(ITestResult result) {
 
         // Log Test Result
@@ -174,5 +97,5 @@ public class BaseTest {
         if (playwright != null) {
             playwright.close();
         }
-    }*/
+    }
 }

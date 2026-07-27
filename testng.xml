@@ -1,18 +1,10 @@
-
-<suite name = "Playwright Test Suite" parallel="tests" thread-count="2">
-    <test name = "Homepage">
+<suite name = "Playwright Test Suite">
+    <test name = "Playwright Tests">
         <classes>
-            <!--<class name = "test.HomePage"/>-->
 
             <class name = "test.LoginTest"/>
+            <class name = "test.AdminTest"/>
+            <class name = "test.PIMTest"/>
         </classes>
     </test>
-   <!-- <test name = "Login Test">
-        <classes>
-            <class name = "test.LoginTest"/>
-        </classes>
-    </test>-->
 </suite>
-
-
-

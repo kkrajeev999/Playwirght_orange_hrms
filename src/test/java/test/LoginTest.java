@@ -13,11 +13,14 @@ public class LoginTest extends BaseTest {
         LoginPage loginPage = new LoginPage(page);
 
         String pagetitle = page.title();
-       test.info("Page title: " + pagetitle);
+        test.info("Page title: " + pagetitle);
         String pageurl = page.url();
         test.info("Page URL: " + pageurl);
         loginPage.loginPage();
-
+        System.out.println("Dash board text verified");
+        System.out.println("Login Test completed successfully.");
+        System.out.println("Profile clicked.");
+        System.out.println("Logout clicked.");
 
 
     }
