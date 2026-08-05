@@ -4,8 +4,6 @@ import com.microsoft.playwright.Page;
 import org.testng.Assert;
 import org.testng.asserts.SoftAssert;
 
-import javax.swing.*;
-
 public class LoginPage {
 
     protected Page page;
@@ -56,6 +54,4 @@ public class LoginPage {
         clickLogout();
 
     }
-
-
 }

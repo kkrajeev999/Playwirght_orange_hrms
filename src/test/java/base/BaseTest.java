@@ -2,98 +2,81 @@ package base;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
-import com.microsoft.playwright.Browser;
-import com.microsoft.playwright.BrowserType;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.*;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import utils.ExtentManager;
 
-import java.awt.*;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.lang.reflect.Method;
+import java.nio.file.Paths;
+import java.util.Properties;
 
-public class  BaseTest {
+public class BaseTest {
 
     protected Playwright playwright;
     protected Browser browser;
+    protected BrowserContext context;
     protected Page page;
     protected ExtentReports extent;
     protected ExtentTest test;
+    protected static Properties prop;
+
+    static {
+        try {
+            prop = new Properties();
+            FileInputStream ip = new FileInputStream("src/test/resources/config.properties");
+            prop.load(ip);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Configuration file not found or could not be read.");
+        }
+    }
 
     @BeforeMethod
     public void setup(Method method) {
-
-        // Initialize Extent Report
         extent = ExtentManager.getInstance();
-
-        // Create test entry in report
         test = extent.createTest(method.getName());
-
-        // Launch Playwright
         playwright = Playwright.create();
+        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false)); // Always launch Chromium, not headless
 
-        // Launch Browser
-        browser = playwright.chromium().launch(
-                new BrowserType.LaunchOptions()
-                        .setHeadless(false));
+        context = browser.newContext(new Browser.NewContextOptions().setViewportSize(1200, 800)); // Fixed viewport size
+        page = context.newPage();
 
-        // Get Screen Size for maximizing window
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int width = (int) screenSize.getWidth();
-        int height = (int) screenSize.getHeight();
+        context.tracing().start(new Tracing.StartOptions().setScreenshots(true).setSnapshots(true).setSources(true));
 
-        // Create new page and maximize
-        page = browser.newPage(new Browser.NewPageOptions().setViewportSize(width, height));
-
-        // Navigate to Login Page
-        page.navigate("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
-
-
-
-        // Perform Login
-        page.locator("[name='username']").fill("Admin");
-
-        page.locator("[name='password']").fill("admin123");
-
+        page.navigate(prop.getProperty("url"));
+        // Perform Login - Reverted to original automatic login
+        page.locator("[name='username']").fill(prop.getProperty("username"));
+        page.locator("[name='password']").fill(prop.getProperty("password"));
         page.locator("button[type='submit']").click();
-
-        // Wait for dashboard page
-        page.waitForURL("**/dashboard/index");
-
-        test.info("Login successful");
-        System.out.println("Login successful");
+        page.waitForURL("**/dashboard/index"); // Wait for dashboard page
     }
 
     @AfterMethod
     public void tearDown(ITestResult result) {
+        String traceFileName = "traces/" + result.getMethod().getMethodName() + "_trace.zip";
+        context.tracing().stop(new Tracing.StopOptions().setPath(Paths.get(traceFileName)));
 
-        // Log Test Result
         if (result.getStatus() == ITestResult.FAILURE) {
-
             test.fail("Test Failed");
-
             test.fail(result.getThrowable());
-
         } else if (result.getStatus() == ITestResult.SUCCESS) {
-
             test.pass("Test Passed Successfully");
-
-        } else if (result.getStatus() == ITestResult.SKIP) {
-
+        } else {
             test.skip("Test Skipped");
         }
 
-        // Flush report
         extent.flush();
 
-        // Close browser
+        if (context != null) {
+            context.close();
+        }
         if (browser != null) {
             browser.close();
         }
-
-        // Close Playwright
         if (playwright != null) {
             playwright.close();
         }

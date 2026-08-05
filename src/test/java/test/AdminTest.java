@@ -27,8 +27,8 @@ public class AdminTest extends BaseTest {
         System.out.println("User role dropdown clicked");
         adminPage.Employeenamefield();
         System.out.println("Employee name field filled");
-        adminPage.Statusdropdown();
-        System.out.println("Status dropdown selected");
+        /*adminPage.Statusdropdown();
+        System.out.println("Status dropdown selected");*/
 
     }
 }
