@@ -1,6 +1,6 @@
 
 
-<!--These are three class-->
+<!--These are three classes-->
 <suite name = "Playwright Test Suite">
     <test name = "Playwright Tests">
         <classes>
