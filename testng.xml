@@ -1,5 +1,11 @@
+<<<<<<< HEAD
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.1.dtd" >
 <!--These are three class-->
+=======
+
+
+<!--These are three classes-->
+>>>>>>> or_branch2
 <suite name = "Playwright Test Suite">
     <test name = "Playwright Tests">
         <classes>
