@@ -41,47 +41,46 @@ public class BaseTest {
         extent = ExtentManager.getInstance();
         test = extent.createTest(method.getName());
         playwright = Playwright.create();
-        /*browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true)); // Always launch Chromium, not headless
-*/
 
-        BrowserType.LaunchOptions options =
-                new BrowserType.LaunchOptions()
-                        .setHeadless(true)
-                        .setArgs(Arrays.asList(
-                                "--no-sandbox",
-                                "--disable-dev-shm-usage"
-                        ));
+        // **DOCKER CONFIG:** Add launch options required for Docker
+        BrowserType.LaunchOptions options = new BrowserType.LaunchOptions()
+                .setHeadless(true) // Must be headless for Docker
+                .setArgs(Arrays.asList("--no-sandbox", "--disable-dev-shm-usage"));
 
         browser = playwright.chromium().launch(options);
-        context = browser.newContext(new Browser.NewContextOptions().setViewportSize(1200, 800)); // Fixed viewport size
+        
+        // **DOCKER CONFIG:** Re-enable BrowserContext and Tracing for debugging
+        context = browser.newContext(new Browser.NewContextOptions().setViewportSize(1200, 800));
         page = context.newPage();
 
         context.tracing().start(new Tracing.StartOptions().setScreenshots(true).setSnapshots(true).setSources(true));
 
         page.navigate(prop.getProperty("url"));
-        // Perform Login - Reverted to original automatic login
+        
+        // Perform Login
         page.locator("[name='username']").fill(prop.getProperty("username"));
         page.locator("[name='password']").fill(prop.getProperty("password"));
         page.locator("button[type='submit']").click();
-        page.waitForURL("**/dashboard/index"); // Wait for dashboard page
+        page.waitForURL("**/dashboard/index");
     }
 
     @AfterMethod
     public void tearDown(ITestResult result) {
+        // **DOCKER CONFIG:** Re-enable stopping the trace
         String traceFileName = "traces/" + result.getMethod().getMethodName() + "_trace.zip";
         context.tracing().stop(new Tracing.StopOptions().setPath(Paths.get(traceFileName)));
 
         if (result.getStatus() == ITestResult.FAILURE) {
-            test.fail("Test Failed");
-            test.fail(result.getThrowable());
+            test.fail("Test Failed: " + result.getThrowable());
         } else if (result.getStatus() == ITestResult.SUCCESS) {
-            test.pass("Test Passed Successfully");
+            test.pass("Test Passed");
         } else {
             test.skip("Test Skipped");
         }
 
         extent.flush();
 
+        // **DOCKER CONFIG:** Close the context
         if (context != null) {
             context.close();
         }
