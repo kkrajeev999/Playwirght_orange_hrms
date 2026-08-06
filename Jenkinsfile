@@ -26,8 +26,8 @@ pipeline {
             steps {
                 script {
                     echo "Building Docker image: ${DOCKER_IMAGE_NAME}..."
-                    // This command uses the Dockerfile in the project root
-                    bat 'docker build -t ${DOCKER_IMAGE_NAME} .'
+                    // **FIX:** Use double quotes to allow variable interpolation
+                    bat "docker build -t ${DOCKER_IMAGE_NAME} ."
                 }
             }
         }
@@ -37,9 +37,8 @@ pipeline {
             steps {
                 script {
                     echo "Running Playwright tests inside the Docker container..."
-                    // This command runs the tests and maps the output directories
-                    // for reports and traces back to the Jenkins workspace.
-                    bat 'docker run --rm -v "%cd%/test-output:/app/test-output" -v "%cd%/traces:/app/traces" ${DOCKER_IMAGE_NAME}'
+                    // **FIX:** Use double quotes to allow variable interpolation
+                    bat "docker run --rm -v \\"%cd%/test-output:/app/test-output\\" -v \\"%cd%/traces:/app/traces\\" ${DOCKER_IMAGE_NAME}"
                 }
             }
         }
