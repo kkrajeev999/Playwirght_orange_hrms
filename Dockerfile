@@ -1,9 +1,9 @@
-FROM mcr.microsoft.com/playwright/java:v1.55.0-noble
+FROM mcr.microsoft.com/playwright/java:v1.59.0-noble
 
 WORKDIR /app
 
 COPY . .
 
-RUN mvn clean package -DskipTests
+RUN mvn clean test-compile
 
 CMD ["mvn","clean","test"]

@@ -12,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Properties;
 
 public class BaseTest {
@@ -40,8 +41,18 @@ public class BaseTest {
         extent = ExtentManager.getInstance();
         test = extent.createTest(method.getName());
         playwright = Playwright.create();
-        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false)); // Always launch Chromium, not headless
+        /*browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true)); // Always launch Chromium, not headless
+*/
 
+        BrowserType.LaunchOptions options =
+                new BrowserType.LaunchOptions()
+                        .setHeadless(true)
+                        .setArgs(Arrays.asList(
+                                "--no-sandbox",
+                                "--disable-dev-shm-usage"
+                        ));
+
+        browser = playwright.chromium().launch(options);
         context = browser.newContext(new Browser.NewContextOptions().setViewportSize(1200, 800)); // Fixed viewport size
         page = context.newPage();
 

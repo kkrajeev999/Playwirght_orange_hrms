@@ -1,6 +1,6 @@
 services:
   playwright:
-    image: mcr.microsoft.com/playwright/java:v1.55.0-noble
+    image: mcr.microsoft.com/playwright/java:v1.59.0-noble
     working_dir: /app
     volumes:
       - ./:/app
