@@ -17,7 +17,10 @@ pipeline {
 
         stage('Run Playwright Tests') {
             steps {
-                bat 'docker run --rm playwright-oranges-hrms'
+                // **FIX:** Add volume mounts to save reports and traces
+                // This maps the 'test-output' and 'traces' directories from the container
+                // back to the Jenkins workspace.
+                bat 'docker run --rm -v "%cd%/test-output:/app/test-output" -v "%cd%/traces:/app/traces" playwright-oranges-hrms'
             }
         }
     }
@@ -26,13 +29,16 @@ pipeline {
 
         always {
 
-            archiveArtifacts artifacts: 'Reports/**', fingerprint: true
+            // **FIX:** Archive the correct directories
+            archiveArtifacts artifacts: 'test-output/**', fingerprint: true
+            archiveArtifacts artifacts: 'traces/**', fingerprint: true
 
             publishHTML(target: [
                     allowMissing: true,
                     alwaysLinkToLastBuild: true,
                     keepAll: true,
-                    reportDir: 'Reports',
+                    // **FIX:** Point to the correct report directory and file
+                    reportDir: 'test-output',
                     reportFiles: 'ExtentReport.html',
                     reportName: 'Extent Report'
             ])
@@ -85,7 +91,8 @@ pipeline {
                 Jenkins CI/CD
                 """,
 
-                    attachmentsPattern: 'Reports/**'
+                    // **FIX:** Attach the correct report directory
+                    attachmentsPattern: 'test-output/**'
             )
         }
     }
