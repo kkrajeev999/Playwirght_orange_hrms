@@ -8,6 +8,7 @@
             <class name = "test.LoginTest"/>
             <class name = "test.AdminTest"/>
             <class name = "test.PIMTest"/>
+            <class name = "test.HomepageTest"/> <!-- Add this line -->
         </classes>
     </test>
 </suite>

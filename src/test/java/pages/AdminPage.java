@@ -22,6 +22,7 @@ public class AdminPage{
 
 
     public AdminPage(Page page) {
+
         this.page = page;
     }
 
