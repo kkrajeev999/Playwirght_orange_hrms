@@ -15,7 +15,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Properties;
 
-public class BaseTest {
+public class BaseTestNoLogin {
 
     protected Playwright playwright;
     protected Browser browser;
@@ -57,11 +57,12 @@ public class BaseTest {
 
         page.navigate(prop.getProperty("url"));
         
-        // Perform Login
-        page.locator("[name='username']").fill(prop.getProperty("username"));
-        page.locator("[name='password']").fill(prop.getProperty("password"));
-        page.locator("button[type='submit']").click();
-        page.waitForURL("**/dashboard/index");
+        // *** LOGIN STEPS REMOVED HERE ***
+        // The following lines are intentionally omitted to prevent automatic login:
+        // page.locator("[name='username']").fill(prop.getProperty("username"));
+        // page.locator("[name='password']").fill(prop.getProperty("password"));
+        // page.locator("button[type='submit']").click();
+        // page.waitForURL("**/dashboard/index");
     }
 
     @AfterMethod
@@ -80,7 +81,6 @@ public class BaseTest {
 
         extent.flush();
 
-        // **DOCKER CONFIG:** Close the context
         if (context != null) {
             context.close();
         }

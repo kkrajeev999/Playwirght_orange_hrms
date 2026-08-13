@@ -1,21 +1,23 @@
 package test;
 
 import base.BaseTest;
+import base.BaseTestNoLogin;
 import org.testng.annotations.Test;
+import pages.HomePage;
 
-public class HomePage extends BaseTest {
+public class HomepageTest extends BaseTestNoLogin {
 
     @Test (testName = "Home Page Test", priority = 1)
     public void homePageTest(){
+        page.navigate(prop.getProperty("url"));
+        HomePage homePage = new HomePage(page);
+        homePage.CredentialsText();
+        System.out.println("Home Page Test completed successfully.");
+        homePage.LoginHeadingText();
+        System.out.println("Login Heading Text test completed successfully.");
 
-        //URL of the application
-        page.navigate("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
-        String pagetitle = page.title();
-        // Print the page title
-        System.out.println("Page Title is: " + pagetitle);
-        String pageurl = page.url();
-       // To print the page URL
-        System.out.println("Page URL is: " + pageurl);
+
+
 
 
     }
