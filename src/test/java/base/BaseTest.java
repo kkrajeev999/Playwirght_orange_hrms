@@ -42,22 +42,32 @@ public class BaseTest {
         test = extent.createTest(method.getName());
         playwright = Playwright.create();
 
-        // **DOCKER CONFIG:** Add launch options required for Docker
-        BrowserType.LaunchOptions options = new BrowserType.LaunchOptions()
-                .setHeadless(false) // Must be headless for Docker
-                .setArgs(Arrays.asList("--no-sandbox", "--disable-dev-shm-usage"));
+        // **NEW:** Check for the CI_RUN environment variable
+        boolean isCiRun = Boolean.parseBoolean(System.getenv("CI_RUN"));
+
+        BrowserType.LaunchOptions options = new BrowserType.LaunchOptions();
+
+        if (isCiRun) {
+            // **DOCKER/CI CONFIG:** Run headless with special arguments
+            System.out.println("CI run detected. Launching in headless mode.");
+            options.setHeadless(true);
+            options.setArgs(Arrays.asList("--no-sandbox", "--disable-dev-shm-usage"));
+        } else {
+            // **LOCAL CONFIG:** Run with a visible browser window
+            System.out.println("Local run detected. Launching in headed mode.");
+            options.setHeadless(false);
+        }
 
         browser = playwright.chromium().launch(options);
         
-        // **DOCKER CONFIG:** Re-enable BrowserContext and Tracing for debugging
-        context = browser.newContext(new Browser.NewContextOptions().setViewportSize(1200, 800));
+        context = browser.newContext(new Browser.NewContextOptions().setViewportSize(1920, 1080));
         page = context.newPage();
 
+        // Tracing is useful for both local and CI runs
         context.tracing().start(new Tracing.StartOptions().setScreenshots(true).setSnapshots(true).setSources(true));
 
         page.navigate(prop.getProperty("url"));
         
-        // Perform Login
         page.locator("[name='username']").fill(prop.getProperty("username"));
         page.locator("[name='password']").fill(prop.getProperty("password"));
         page.locator("button[type='submit']").click();
@@ -66,7 +76,6 @@ public class BaseTest {
 
     @AfterMethod
     public void tearDown(ITestResult result) {
-        // **DOCKER CONFIG:** Re-enable stopping the trace
         String traceFileName = "traces/" + result.getMethod().getMethodName() + "_trace.zip";
         context.tracing().stop(new Tracing.StopOptions().setPath(Paths.get(traceFileName)));
 
@@ -80,7 +89,6 @@ public class BaseTest {
 
         extent.flush();
 
-        // **DOCKER CONFIG:** Close the context
         if (context != null) {
             context.close();
         }
