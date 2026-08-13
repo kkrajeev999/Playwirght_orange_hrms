@@ -5,7 +5,6 @@ pipeline {
         JIRA_SITE = 'https://rajeevsworkspace-29569754.atlassian.net'
         JIRA_PROJECT = 'KAN'
         JIRA_CREDENTIALS_ID = 'JIRA_API_TOKEN'
-        // **NEW:** Define a flag to identify a CI environment run
         CI_RUN = 'true' 
     }
 
@@ -24,8 +23,8 @@ pipeline {
 
         stage('Run Playwright Tests') {
             steps {
-                // **MODIFIED:** Pass the CI_RUN environment variable into the container
-                bat 'docker run --rm -e CI_RUN=${CI_RUN} -v "%cd%/test-output:/app/test-output" -v "%cd%/traces:/app/traces" playwright-oranges-hrms'
+                // **FIX:** Use double quotes to allow the CI_RUN variable to be interpolated
+                bat "docker run --rm -e CI_RUN=${CI_RUN} -v \\"%cd%/test-output:/app/test-output\\" -v \\"%cd%/traces:/app/traces\\" playwright-oranges-hrms"
             }
         }
     }
