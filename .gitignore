@@ -37,3 +37,4 @@ build/
 ### Mac OS ###
 .DS_Storejenkins.war
 jenkins.war
+traces/
